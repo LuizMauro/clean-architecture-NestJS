@@ -1,0 +1,979 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clean Architecture NestJS - Documentação Detalhada</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: #2c3e50;
+      }
+
+      .layer {
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 5px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .layer-title {
+        background: #f8f9fa;
+        padding: 15px;
+        margin: -20px -20px 20px -20px;
+        border-bottom: 1px solid #ddd;
+        border-radius: 5px 5px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .folder {
+        margin-left: 20px;
+        padding: 15px;
+        border-left: 3px solid #3498db;
+        background-color: #f8f9fa;
+        margin-bottom: 15px;
+      }
+
+      .code-block {
+        background: #282c34;
+        color: #abb2bf;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        font-family: 'Fira Code', monospace;
+        margin: 10px 0;
+      }
+
+      .example {
+        background: #fff8dc;
+        padding: 15px;
+        margin: 10px 0;
+        border-left: 4px solid #ffd700;
+        border-radius: 0 5px 5px 0;
+      }
+
+      .flow {
+        background: #f8f9fa;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 5px;
+        border: 1px solid #e9ecef;
+      }
+
+      .tag {
+        background: #3498db;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 0.8em;
+      }
+
+      .note {
+        background: #e1f5fe;
+        padding: 15px;
+        margin: 10px 0;
+        border-left: 4px solid #03a9f4;
+        border-radius: 0 5px 5px 0;
+      }
+
+      .implementation {
+        margin-top: 15px;
+        padding: 15px;
+        background: #f1f8ff;
+        border-radius: 5px;
+      }
+
+      .diagram {
+        background: white;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+
+      .code-title {
+        background: #21252b;
+        color: #fff;
+        padding: 5px 15px;
+        border-radius: 5px 5px 0 0;
+        margin-bottom: -10px;
+      }
+
+      .section-nav {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 250px;
+      }
+
+      .section-nav ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .section-nav li {
+        margin: 5px 0;
+      }
+
+      .section-nav a {
+        color: #3498db;
+        text-decoration: none;
+      }
+
+      .code-explanation {
+        background: #f1f8ff;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+
+      .warning {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 0 5px 5px 0;
+      }
+
+      .best-practice {
+        background: #d4edda;
+        border-left: 4px solid #28a745;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 0 5px 5px 0;
+      }
+
+      .pattern-example {
+        background: #e8eaf6;
+        border-left: 4px solid #3f51b5;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 0 5px 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Menu de Navegação -->
+    <nav class="section-nav">
+      <h3>Índice</h3>
+      <ul>
+        <li>
+          <a href="#visao-geral">Visão Geral</a>
+        </li>
+        <li>
+          <a href="#arquitetura">Arquitetura</a>
+        </li>
+        <li>
+          <a href="#camadas">Camadas</a>
+        </li>
+        <li>
+          <a href="#injecao-dependencia">Injeção de Dependência</a>
+        </li>
+        <li>
+          <a href="#tratamento-erros">Tratamento de Erros</a>
+        </li>
+        <li>
+            <a href="#padroes-projeto"> Padrões de Projeto e Boas Práticas</a>
+        </li>
+        <li>
+            <a href="#documentacao">Documentação com Swagger</a>
+        </li>
+        <li>
+            <a href="#conclusao">Conclusão e Boas Práticas</a>
+        </li>
+      </ul>
+    </nav>
+    <h1>🏗️ Clean Architecture com NestJS - Documentação Detalhada</h1>
+
+
+    <!-- Seção: Visão Geral -->
+    <section id="visao-geral" class="layer">
+      <div class="layer-title">
+        <h2>Visão Geral da Arquitetura</h2>
+      </div>
+      <div class="note">
+        <h3>Objetivos</h3>
+        <ul>
+          <li>Separação clara de responsabilidades</li>
+          <li>Independência de frameworks</li>
+          <li>Testabilidade</li>
+          <li>Manutenibilidade</li>
+          <li>Escalabilidade</li>
+        </ul>
+      </div>
+      <div class="diagram">
+        <h3>Estrutura de Camadas</h3>
+        <pre>
+Presentation Layer (Controllers)
+           ↓
+Application Layer (Use Cases)
+           ↓
+Domain Layer (Entities)
+           ↓
+Infrastructure Layer (Repositories)
+            </pre>
+      </div>
+      <div class="best-practice">
+        <h3>Regras de Dependência</h3>
+        <ul>
+          <li>Camadas externas podem depender de camadas internas</li>
+          <li>Camadas internas não conhecem camadas externas</li>
+          <li>Dependências sempre apontam para dentro</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Seção: Arquitetura -->
+<section id="arquitetura" class="layer">
+    <div class="layer-title">
+        <h2>Arquitetura do Projeto</h2>
+    </div>
+
+    <div class="folder">
+        <h3>Estrutura de Diretórios</h3>
+        <div class="code-block">
+            <pre>
+src/
+├── core/                     # Regras de negócio e entidades
+│   ├── entities/            # Entidades do domínio
+│   ├── interfaces/          # Contratos e interfaces
+│   └── errors/             # Erros específicos do domínio
+│
+├── application/             # Casos de uso e lógica de aplicação
+│   ├── use-cases/          # Implementação dos casos de uso
+│   └── dtos/               # Objetos de transferência de dados
+│
+├── infrastructure/          # Implementações técnicas
+│   ├── database/           # Configurações e entidades do banco
+│   │   ├── entities/       # Entidades do TypeORM
+│   │   └── mappers/       # Conversores de entidades
+│   ├── repositories/       # Implementações dos repositórios
+│   └── common/            # Utilitários compartilhados
+│       ├── filters/       # Filtros de exceção
+│       ├── interceptors/  # Interceptadores
+│       └── middleware/    # Middlewares
+│
+└── presentation/           # Interface com o usuário
+    └── controllers/       # Controllers da API REST
+            </pre>
+        </div>
+    </div>
+
+    <div class="folder">
+        <h3>Fluxo de Dados</h3>
+        <div class="diagram">
+            <pre>
+Cliente HTTP → Controller → Use Case → Repository Interface → Repository Implementation → Banco de Dados
+     ↑           ↑            ↑              ↑                    ↑                         ↑
+  Response ← ResponseDTO ← Domain Entity ← Interface ← Repository Implementation ← Database Entity
+            </pre>
+        </div>
+        <div class="code-explanation">
+            <h4>Processo:</h4>
+            <ol>
+                <li>Cliente faz requisição HTTP para um endpoint</li>
+                <li>Controller recebe e valida os dados (DTO)</li>
+                <li>Use Case executa a lógica de negócio</li>
+                <li>Repository Interface define o contrato</li>
+                <li>Repository Implementation interage com o banco</li>
+                <li>Dados retornam pelo mesmo caminho</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="folder">
+        <h3>Dependências entre Camadas</h3>
+        <div class="implementation">
+            <div class="code-explanation">
+                <h4>Regras:</h4>
+                <ul>
+                    <li>🎯 Core não depende de nenhuma outra camada</li>
+                    <li>🔄 Application depende apenas do Core</li>
+                    <li>🛠️ Infrastructure implementa interfaces do Core</li>
+                    <li>🖥️ Presentation depende de Application</li>
+                </ul>
+            </div>
+        </div>
+        <div class="note">
+            <h4>Benefícios:</h4>
+            <ul>
+                <li>✅ Baixo acoplamento entre camadas</li>
+                <li>✅ Facilidade para trocar implementações</li>
+                <li>✅ Regras de negócio protegidas</li>
+                <li>✅ Melhor testabilidade</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="folder">
+        <h3>Componentes Principais</h3>
+        <div class="implementation">
+            <ul>
+                <li>
+                    <strong>Entidades:</strong> Regras de negócio e validações
+                    <div class="example">User, Product, Order, etc.</div>
+                </li>
+                <li>
+                    <strong>Use Cases:</strong> Lógica de aplicação
+                    <div class="example">CreateUser, UpdateUser, DeleteUser, etc.</div>
+                </li>
+                <li>
+                    <strong>Repositories:</strong> Persistência de dados
+                    <div class="example">UserRepository, ProductRepository, etc.</div>
+                </li>
+                <li>
+                    <strong>Controllers:</strong> Endpoints da API
+                    <div class="example">UserController, ProductController, etc.</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="warning">
+        <h4>Pontos de Atenção na Arquitetura:</h4>
+        <ul>
+            <li>⚠️ Manter a direção das dependências</li>
+            <li>⚠️ Não vazar detalhes de implementação</li>
+            <li>⚠️ Usar interfaces para acoplamento fraco</li>
+            <li>⚠️ Manter entidades do domínio puras</li>
+            <li>⚠️ Separar responsabilidades claramente</li>
+        </ul>
+    </div>
+</section>
+
+
+    <!-- Seção: Detalhamento das Camadas -->
+    <section id="camadas" class="layer">
+      <div class="layer-title">
+        <h2>Detalhamento das Camadas</h2>
+      </div>
+      <!-- Core/Domain Layer -->
+      <div class="folder">
+        <h3>1. Core/Domain Layer</h3>
+        <div class="note">
+          <p>Camada mais interna, contém as regras de negócio e entidades do domínio.</p>
+        </div>
+        <div class="implementation">
+          <div class="code-title">Entidade de Domínio (User)</div>
+          <div class="code-block">
+            <pre>
+export class User {
+    constructor(
+        private readonly id: string,
+        private readonly name: string,
+        private readonly email: string,
+        private readonly password: string,
+    ) {}
+
+    getId(): string { return this.id; }
+    getName(): string { return this.name; }
+    getEmail(): string { return this.email; }
+    getPassword(): string { return this.password; }
+
+    isValidPassword(password: string): boolean {
+        return password.length >= 6;
+    }
+}
+                </pre>
+          </div>
+          <div class="code-explanation">
+            <ul>
+              <li>✅ Encapsulamento através de getters</li>
+              <li>✅ Imutabilidade com readonly</li>
+              <li>✅ Regras de negócio (validação de senha)</li>
+              <li>✅ Independente de frameworks</li>
+            </ul>
+          </div>
+        </div>
+        <div class="implementation">
+          <div class="code-title">Interface do Repositório</div>
+          <div class="code-block">
+            <pre>
+export interface IUserRepository {
+    create(user: User): Promise
+					<User>;
+    findById(id: string): Promise
+						<User>;
+    findByEmail(email: string): Promise
+							<User>;
+    findAll(): Promise<User[]>;
+    update(id: string, user: User): Promise
+								<User>;
+    delete(id: string): Promise
+									<void>;
+}
+                
+									</pre>
+          </div>
+          <div class="code-explanation">
+            <ul>
+              <li>✅ Define contrato para persistência</li>
+              <li>✅ Independente de implementação</li>
+              <li>✅ Permite múltiplas implementações</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Application Layer -->
+      <div class="folder">
+        <h3>2. Application Layer</h3>
+        <div class="note">
+          <p>Orquestra o fluxo de dados e implementa casos de uso da aplicação.</p>
+        </div>
+        <div class="implementation">
+          <div class="code-title">Caso de Uso (CreateUser)</div>
+          <div class="code-block">
+            <pre>
+@Injectable()
+export class CreateUserUseCase {
+    constructor(
+        @Inject('IUserRepository')
+        private readonly userRepository: IUserRepository
+    ) {}
+
+    async execute(createUserDto: CreateUserDto): Promise
+										<User> {
+        const existingUser = await this.userRepository
+            .findByEmail(createUserDto.email);
+        
+        if (existingUser) {
+            throw new EmailAlreadyExistsError(createUserDto.email);
+        }
+
+        const user = new User(
+            uuidv4(),
+            createUserDto.name,
+            createUserDto.email,
+            createUserDto.password
+        );
+
+        if (!user.isValidPassword(createUserDto.password)) {
+            throw new InvalidPasswordError();
+        }
+
+        return this.userRepository.create(user);
+    }
+}
+                
+										</pre>
+          </div>
+          <div class="code-explanation">
+            <ul>
+              <li>✅ Implementa lógica de negócio específica</li>
+              <li>✅ Usa injeção de dependência</li>
+              <li>✅ Trata erros do domínio</li>
+              <li>✅ Valida regras de negócio</li>
+            </ul>
+          </div>
+        </div>
+        <div class="implementation">
+          <div class="code-title">DTOs (Data Transfer Objects)</div>
+          <div class="code-block">
+            <pre>
+export class CreateUserDto {
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    @MinLength(3)
+    name: string;
+
+    @ApiProperty()
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
+
+    @ApiProperty()
+    @IsString()
+    @MinLength(6)
+    password: string;
+}
+                </pre>
+          </div>
+          <div class="code-explanation">
+            <ul>
+              <li>✅ Validação de dados de entrada</li>
+              <li>✅ Documentação com Swagger</li>
+              <li>✅ Tipagem forte</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Infrastructure Layer -->
+      <div class="folder">
+        <h3>3. Infrastructure Layer</h3>
+        <div class="note">
+          <p>Implementa detalhes técnicos e integrações com serviços externos.</p>
+        </div>
+        <div class="implementation">
+          <div class="code-title">Implementação do Repositório</div>
+          <div class="code-block">
+            <pre>
+@Injectable()
+export class UserRepository implements IUserRepository {
+    constructor(
+        @InjectRepository(UserTypeormEntity)
+        private readonly userRepository: Repository
+											<UserTypeormEntity>
+    ) {}
+
+    async create(user: User): Promise
+												<User> {
+        const persistenceUser = UserMapper.toPersistence(user);
+        const savedUser = await this.userRepository.save(persistenceUser);
+        return UserMapper.toDomain(savedUser);
+    }
+    // ... outros métodos
+}
+                
+												</pre>
+          </div>
+          <div class="code-explanation">
+            <ul>
+              <li>✅ Implementa interface do domínio</li>
+              <li>✅ Usa TypeORM para persistência</li>
+              <li>✅ Mapeia entre domínio e ORM</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Seção: Injeção de Dependência -->
+    <section id="injecao-dependencia" class="layer">
+      <div class="layer-title">
+        <h2>Injeção de Dependência e Inversão de Controle</h2>
+      </div>
+      <div class="note">
+        <p>O NestJS utiliza um sistema de injeção de dependência poderoso que nos permite implementar a inversão de controle de forma elegante.</p>
+      </div>
+      <div class="folder">
+        <h3>1. Fluxo de Injeção</h3>
+        <div class="implementation">
+          <div class="code-title">1.1 Definição da Interface (Core)</div>
+          <div class="code-block">
+            <pre>
+// src/core/interfaces/repositories/user-repository.interface.ts
+export interface IUserRepository {
+    create(user: User): Promise
+													<User>;
+    findById(id: string): Promise
+														<User>;
+    // ... outros métodos
+}
+                
+														</pre>
+          </div>
+          <div class="code-title">1.2 Registro do Provider (Infrastructure)</div>
+          <div class="code-block">
+            <pre>
+// src/infrastructure/infrastructure.module.ts
+@Module({
+    imports: [
+        TypeOrmModule.forRoot(databaseConfig),
+        TypeOrmModule.forFeature([UserTypeormEntity])
+    ],
+    providers: [{
+        provide: 'IUserRepository',
+        useClass: UserRepository
+    }],
+    exports: ['IUserRepository']
+})
+export class InfrastructureModule {}
+                </pre>
+          </div>
+          <div class="code-title">1.3 Injeção no Caso de Uso (Application)</div>
+          <div class="code-block">
+            <pre>
+// src/application/use-cases/create-user.use-case.ts
+@Injectable()
+export class CreateUserUseCase {
+    constructor(
+        @Inject('IUserRepository')
+        private readonly userRepository: IUserRepository
+    ) {}
+}
+                </pre>
+          </div>
+        </div>
+        <div class="code-explanation">
+          <h4>Benefícios:</h4>
+          <ul>
+            <li>✅ Desacoplamento entre camadas</li>
+            <li>✅ Facilidade para testes (mock de dependências)</li>
+            <li>✅ Flexibilidade para trocar implementações</li>
+            <li>✅ Código mais limpo e organizado</li>
+          </ul>
+        </div>
+      </div>
+      <div class="folder">
+        <h3>2. Troca de Implementações</h3>
+        <div class="implementation">
+          <div class="code-title">Exemplo: Mudando para MongoDB</div>
+          <div class="code-block">
+            <pre>
+// Nova implementação do repositório
+@Injectable()
+export class UserMongoRepository implements IUserRepository {
+    constructor(
+        @InjectModel(UserMongoEntity.name)
+        private readonly userModel: Model
+															<UserMongoEntity>
+    ) {}
+
+    async create(user: User): Promise
+																<User> {
+        const mongoUser = UserMongoMapper.toPersistence(user);
+        const created = await this.userModel.create(mongoUser);
+        return UserMongoMapper.toDomain(created);
+    }
+    // ... outros métodos
+}
+
+// Atualização do módulo
+@Module({
+    imports: [
+        MongooseModule.forRoot('mongodb://localhost/nest'),
+        MongooseModule.forFeature([
+            { name: UserMongoEntity.name, schema: UserSchema }
+        ])
+    ],
+    providers: [{
+        provide: 'IUserRepository',
+        useClass: UserMongoRepository // 👈 Única mudança necessária
+    }],
+    exports: ['IUserRepository']
+})
+export class InfrastructureModule {}
+                
+																</pre>
+          </div>
+        </div>
+        <div class="warning">
+          <h4>Importante:</h4>
+          <p>Ao trocar implementações:</p>
+          <ul>
+            <li>✅ Casos de uso permanecem inalterados</li>
+            <li>✅ Controllers não são afetados</li>
+            <li>✅ Entidades do domínio continuam as mesmas</li>
+            <li>✅ Testes continuam válidos</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- Seção: Tratamento de Erros -->
+    <section id="tratamento-erros" class="layer">
+      <div class="layer-title">
+        <h2>Sistema de Tratamento de Erros</h2>
+      </div>
+      <div class="folder">
+        <h3>1. Erros de Domínio</h3>
+        <div class="implementation">
+          <div class="code-title">Definição de Erros Específicos</div>
+          <div class="code-block">
+            <pre>
+// src/core/errors/user.errors.ts
+export class EmailAlreadyExistsError extends Error {
+    constructor(email: string) {
+        super(`Email ${email} already exists`);
+        this.name = 'EmailAlreadyExistsError';
+    }
+}
+
+export class UserNotFoundError extends Error {
+    constructor(id: string) {
+        super(`User with id ${id} not found`);
+        this.name = 'UserNotFoundError';
+    }
+}
+                </pre>
+          </div>
+        </div>
+        <div class="implementation">
+          <div class="code-title">Filtro Global de Exceções</div>
+          <div class="code-block">
+            <pre>
+// src/infrastructure/common/filters/http-exception.filter.ts
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+    catch(exception: unknown, host: ArgumentsHost) {
+        const ctx = host.switchToHttp();
+        const response = ctx.getResponse
+																	<Response>();
+
+        let status = HttpStatus.INTERNAL_SERVER_ERROR;
+        let message = 'Internal server error';
+
+        if (exception instanceof EmailAlreadyExistsError) {
+            status = HttpStatus.CONFLICT;
+            message = exception.message;
+        } else if (exception instanceof UserNotFoundError) {
+            status = HttpStatus.NOT_FOUND;
+            message = exception.message;
+        }
+
+        response.status(status).json({
+            statusCode: status,
+            message,
+            timestamp: new Date().toISOString(),
+            path: ctx.getRequest().url,
+        });
+    }
+}
+                
+																	</pre>
+          </div>
+        </div>
+        <div class="code-explanation">
+          <h4>Benefícios:</h4>
+          <ul>
+            <li>✅ Erros semanticamente significativos</li>
+            <li>✅ Tratamento centralizado</li>
+            <li>✅ Respostas padronizadas</li>
+            <li>✅ Facilidade de manutenção</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Seção: Padrões de Projeto -->
+    <section id="padroes-projeto" class="layer">
+      <div class="layer-title">
+        <h2>Padrões de Projeto e Boas Práticas</h2>
+      </div>
+      <div class="folder">
+        <h3>1. Repository Pattern</h3>
+        <div class="pattern-example">
+          <p>Abstrai a camada de persistência através de interfaces.</p>
+          <div class="code-title">Exemplo de Uso</div>
+          <div class="code-block">
+            <pre>
+// Interface (Core)
+export interface IUserRepository {
+    create(user: User): Promise
+																		<User>;
+    findById(id: string): Promise
+																			<User>;
+}
+
+// Implementação (Infrastructure)
+@Injectable()
+export class UserRepository implements IUserRepository {
+    constructor(
+        @InjectRepository(UserTypeormEntity)
+        private readonly userRepository: Repository
+																				<UserTypeormEntity>
+    ) {}
+    // implementação dos métodos
+}
+                
+																				</pre>
+          </div>
+          <div class="code-explanation">
+            <h4>Benefícios:</h4>
+            <ul>
+              <li>✅ Desacoplamento da fonte de dados</li>
+              <li>✅ Facilidade para trocar implementações</li>
+              <li>✅ Melhor testabilidade</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="folder">
+        <h3>2. Mapper Pattern</h3>
+        <div class="pattern-example">
+          <p>Converte entre entidades de domínio e entidades de persistência.</p>
+          <div class="code-title">Exemplo de Implementação</div>
+          <div class="code-block">
+            <pre>
+export class UserMapper {
+    static toDomain(userEntity: UserTypeormEntity): User {
+        return new User(
+            userEntity.id,
+            userEntity.name,
+            userEntity.email,
+            userEntity.password
+        );
+    }
+
+    static toPersistence(user: User): UserTypeormEntity {
+        const userEntity = new UserTypeormEntity();
+        userEntity.id = user.getId();
+        userEntity.name = user.getName();
+        userEntity.email = user.getEmail();
+        userEntity.password = user.getPassword();
+        return userEntity;
+    }
+}
+                </pre>
+          </div>
+          <div class="code-explanation">
+            <h4>Vantagens:</h4>
+            <ul>
+              <li>✅ Separação clara entre domínio e persistência</li>
+              <li>✅ Evita vazamento de detalhes de implementação</li>
+              <li>✅ Facilita mudanças na estrutura de dados</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="folder">
+        <h3>3. Use Case Pattern</h3>
+        <div class="pattern-example">
+          <p>Encapsula a lógica de negócio em classes específicas.</p>
+          <div class="code-title">Exemplo de Caso de Uso</div>
+          <div class="code-block">
+            <pre>
+@Injectable()
+export class CreateUserUseCase {
+    constructor(
+        @Inject('IUserRepository')
+        private readonly userRepository: IUserRepository
+    ) {}
+
+    async execute(createUserDto: CreateUserDto): Promise
+																					<User> {
+        // validações e lógica de negócio
+        const user = new User(/*...*/);
+        return this.userRepository.create(user);
+    }
+}
+                
+																					</pre>
+          </div>
+          <div class="code-explanation">
+            <h4>Vantagens:</h4>
+            <ul>
+              <li>✅ Separação clara de responsabilidades</li>
+              <li>✅ Reutilização de lógica</li>
+              <li>✅ Facilidade de manutenção</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="folder">
+        <h3>4. DTO Pattern</h3>
+        <div class="pattern-example">
+          <p>Objetos específicos para transferência de dados entre camadas.</p>
+          <div class="code-title">Exemplo de DTOs</div>
+          <div class="code-block">
+            <pre>
+export class CreateUserDto {
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
+    @IsEmail()
+    email: string;
+
+    @MinLength(6)
+    password: string;
+}
+
+export class UserResponseDto {
+    id: string;
+    name: string;
+    email: string;
+
+    static fromDomain(user: User): UserResponseDto {
+        return {
+            id: user.getId(),
+            name: user.getName(),
+            email: user.getEmail()
+        };
+    }
+}
+                </pre>
+          </div>
+          <div class="code-explanation">
+            <h4>Benefícios:</h4>
+            <ul>
+              <li>✅ Validação de dados de entrada</li>
+              <li>✅ Controle de dados expostos</li>
+              <li>✅ Documentação clara com Swagger</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Seção: Documentação -->
+    <section id="documentacao" class="layer">
+      <div class="layer-title">
+        <h2>Documentação com Swagger</h2>
+      </div>
+      <div class="implementation">
+        <div class="code-title">Configuração do Swagger</div>
+        <div class="code-block">
+          <pre>
+const config = new DocumentBuilder()
+    .setTitle('Clean Architecture API')
+    .setDescription('API com Clean Architecture e NestJS')
+    .setVersion('1.0')
+    .addTag('users')
+    .build();
+
+const document = SwaggerModule.createDocument(app, config);
+SwaggerModule.setup('api', app, document);
+            </pre>
+        </div>
+      </div>
+      <div class="note">
+        <h4>Acesso à Documentação:</h4>
+        <p>A documentação completa da API está disponível em:</p>
+        <code>http://localhost:3000/api</code>
+      </div>
+    </section>
+
+
+    <!-- Seção: Conclusão -->
+    <section id="conclusao" class="layer">
+      <div class="layer-title">
+        <h2>Conclusão e Boas Práticas</h2>
+      </div>
+      <div class="best-practice">
+        <h3>Princípios Seguidos</h3>
+        <ul>
+          <li>✅ <strong>Single Responsibility:</strong> Cada classe tem uma única responsabilidade </li>
+          <li>✅ <strong>Open/Closed:</strong> Extensível sem modificar código existente </li>
+          <li>✅ <strong>Liskov Substitution:</strong> Implementações podem ser substituídas </li>
+          <li>✅ <strong>Interface Segregation:</strong> Interfaces específicas para cada cliente </li>
+          <li>✅ <strong>Dependency Inversion:</strong> Dependências apontam para abstrações </li>
+        </ul>
+      </div>
+      <div class="warning">
+        <h3>Pontos de Atenção</h3>
+        <ul>
+          <li>⚠️ Manter a independência das camadas</li>
+          <li>⚠️ Evitar vazamento de detalhes de implementação</li>
+          <li>⚠️ Tratar erros de forma adequada</li>
+          <li>⚠️ Validar dados de entrada</li>
+          <li>⚠️ Documentar endpoints e DTOs</li>
+        </ul>
+      </div>
+    </section>
+  </body>
+</html>
