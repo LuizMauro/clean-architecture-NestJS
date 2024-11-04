@@ -45,10 +45,6 @@ Este projeto serve como um exemplo prático de:
 - Boas práticas de desenvolvimento
 
 
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
 ## 📚 Links Úteis
 
 - [Documentação do NestJS](https://docs.nestjs.com/)
