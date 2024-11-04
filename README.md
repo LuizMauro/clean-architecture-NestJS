@@ -44,9 +44,6 @@ Este projeto serve como um exemplo prático de:
 - Testes unitários e de integração
 - Boas práticas de desenvolvimento
 
-## 🤝 Contribuições
-
-Este é um projeto de estudo, mas sugestões e contribuições são sempre bem-vindas! Confira nosso [guia de contribuição](CONTRIBUTING.md).
 
 ## 📄 Licença
 
